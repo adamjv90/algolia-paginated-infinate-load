@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, Children } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import update from 'react-addons-update';
 import algoliasearch from 'algoliasearch';
@@ -149,10 +149,8 @@ class AlgoliaPager extends Component {
   render() {
     return (
       <div style={ { height: '100%', width: '100%' } }>
-        <ScrollTopBottomNotifier ref='scroll' onTop={ this.handlePrevious.bind(this) } onBottom={ this.handleNext.bind(this) } offset={ 700 }>
-          { Children.map(this.props.children(this.state.pages), (page) => {
-            return <div ref={ page.props.number }>{ page }</div>;
-          }) }
+        <ScrollTopBottomNotifier ref='scroll' onTop={ () => {} } onBottom={ this.handleNext.bind(this) } offset={ 700 }>
+          { this.props.children(this.state.pages) }
         </ScrollTopBottomNotifier>
       </div>
     );

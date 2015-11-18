@@ -1,4 +1,6 @@
 import React, { PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
+import { first, isUndefined } from 'lodash';
 import { History } from 'react-router';
 import ImageLoader from 'react-imageloader';
 import EqualLengthColumns from 'components/equal-length-column';
@@ -43,6 +45,12 @@ export default React.createClass({
     window.removeEventListener('resize', this.setAvailableWidth);
   },
 
+  componentDidUpdate() {
+    if (this.props.location.action === 'POP') {
+      findDOMNode(this.refs.search).value = this.props.params.query || '';
+    }
+  },
+
   setAvailableWidth() {
     this.setState({ availableWidth: window.innerWidth });
   },
@@ -53,11 +61,11 @@ export default React.createClass({
   },
 
   handleNext(page) {
-    this.history.pushState(null, '/' + page.query + '?page=' + page.number);
+    this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
   },
 
   handlePrevious(page) {
-    this.history.pushState(null, '/' + page.query + '?page=' + page.number);
+    this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
   },
 
   render() {
@@ -70,36 +78,45 @@ export default React.createClass({
       <div style={ { display: 'flex', flexDirection: 'column', height: '100%', width: '100%' } }>
         <div style={ { background: '#999', width: '100%', margin: '0 auto', overflow: 'hidden' } }>
           <form onSubmit={ this.handleSearch }>
-            <input style={ { textAlign: 'center', fontFamily: 'Open Sans', fontSize: 20, pading: 0, oultine: 'none!important', width: '100%', margin: 0, border: 0 } } valueLink={ this.linkState('search') } />
+            <input ref='search' placeholder='Search' style={ { textAlign: 'center', fontFamily: 'Open Sans', fontSize: 20, padding: '10px 0', oultine: 'none!important', width: '100%', margin: 0, border: 0 } } valueLink={ this.linkState('search') } />
           </form>
         </div>
         <div style={ { flex: 1, position: 'relative' } }>
           <div style={ { position: 'absolute', height: '100%', width: '100%' } }>
-            <AlgoliaPager index='images' query={ this.props.params.query || '' } perPage={ 50 } page={ this.props.location.query.page ? parseInt(this.props.location.query.page, 10) : 0 } onNext={ this.handleNext } onPrevious={ this.handlePrevious } scrollOnUpdate={ this.props.location.action === 'POP' }>
+            <AlgoliaPager ref='pager' index='images' query={ this.props.params.query || '' } perPage={ 50 } page={ this.props.location.query.page ? parseInt(this.props.location.query.page, 10) : 0 } onNext={ this.handleNext } onPrevious={ this.handlePrevious } scrollOnUpdate={ this.props.location.action === 'POP' }>
               { (pages) => {
-                return pages.map((page) => {
-                  return (
-                    <div style={ { width: conatinerWidth, margin: '0 auto' } } number={ page.number }>
-                      <div style={ { backgroundColor: '#F89688', borderRadius: 2, color: '#ffffff', fontFamily: 'Open Sans', padding: 5, marginBottom: 10 } }>Page { page.number + 1 } { this.props.params.query ? 'for ' + this.props.params.query : '' }</div>
-                      <EqualLengthColumns columns={ columnCount } margin={ columnMargin }>
-                        { page.results.map((image) => {
-                          const width = columnWidth;
-                          const height = width / image.width * image.height;
-                          return (
-                            <ImageLoader
-                              key={ image.objectID }
-                              src={ resize(image.src, width) }
-                              width={ width }
-                              height={ height }
-                              style={ { width: width, height: height } }
-                              wrapper={ React.DOM.div }
-                            />
-                          );
-                        }) }
-                      </EqualLengthColumns>
-                    </div>
-                  );
-                });
+                const firstPage = first(pages);
+                return (
+                  <div>
+                    { !isUndefined(firstPage) && firstPage.number > 0 ? <div style={ { textAlign: 'center', margin: '10px 0', cursor: 'pointer', color: '#74A9B0', fontFamily: 'Open Sans', fontSize: 14 } } onClick={ () => this.refs.pager.handlePrevious() }>
+                      <i style={ { fontSize: 20 } } className='fa fa-angle-up'></i> <span style={ { lineHeight: '20px' } }>page { firstPage.number }</span>
+                    </div> : <div /> }
+
+                    { pages.map((page) => {
+                      return (
+                        <div style={ { width: conatinerWidth, margin: '0 auto' } } number={ page.number } ref={ page.number } key={ page.number }>
+                          <div style={ { backgroundColor: '#F89688', borderRadius: 2, color: '#ffffff', fontFamily: 'Open Sans', padding: 5, marginBottom: 10 } }>Page { page.number + 1 } { this.props.params.query ? 'for ' + this.props.params.query : '' }</div>
+                          <EqualLengthColumns columns={ columnCount } margin={ columnMargin }>
+                            { page.results.map((image) => {
+                              const width = columnWidth;
+                              const height = width / image.width * image.height;
+                              return (
+                                <ImageLoader
+                                  key={ image.objectID }
+                                  src={ resize(image.src, width) }
+                                  width={ width }
+                                  height={ height }
+                                  style={ { width: width, height: height } }
+                                  wrapper={ React.DOM.div }
+                                />
+                              );
+                            }) }
+                          </EqualLengthColumns>
+                        </div>
+                      );
+                    }) }
+                  </div>
+                );
               } }
             </AlgoliaPager>
           </div>
