@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
+import update from 'react-addons-update';
 import { findDOMNode } from 'react-dom';
 import { first, isUndefined } from 'lodash';
 import { History } from 'react-router';
 import ImageLoader from 'react-imageloader';
+import Ad from 'components/ad';
 import EqualLengthColumns from 'components/equal-length-column';
 import AlgoliaPager from 'components/algolia-pager';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
@@ -93,24 +95,28 @@ export default React.createClass({
                     </div> : <div /> }
 
                     { pages.map((page) => {
+                      const cells = update(page.results.map((image) => {
+                        const width = columnWidth;
+                        const height = width / image.width * image.height;
+                        return (
+                          <ImageLoader
+                            key={ image.objectID }
+                            src={ resize(image.src, width) }
+                            width={ width }
+                            height={ height }
+                            style={ { width: width, height: height } }
+                            wrapper={ React.DOM.div }
+                          />
+                        );
+                      }), {
+                        $unshift: [<Ad mn='93476277' width={ 300 } height={ 250 } key='ad' />]
+                      });
+
                       return (
                         <div style={ { width: conatinerWidth, margin: '0 auto' } } number={ page.number } ref={ page.number } key={ page.number }>
                           <div style={ { backgroundColor: '#F89688', borderRadius: 2, color: '#ffffff', fontFamily: 'Open Sans', padding: 5, marginBottom: 10 } }>Page { page.number + 1 } { this.props.params.query ? 'for ' + this.props.params.query : '' }</div>
                           <EqualLengthColumns columns={ columnCount } margin={ columnMargin }>
-                            { page.results.map((image) => {
-                              const width = columnWidth;
-                              const height = width / image.width * image.height;
-                              return (
-                                <ImageLoader
-                                  key={ image.objectID }
-                                  src={ resize(image.src, width) }
-                                  width={ width }
-                                  height={ height }
-                                  style={ { width: width, height: height } }
-                                  wrapper={ React.DOM.div }
-                                />
-                              );
-                            }) }
+                            { cells }
                           </EqualLengthColumns>
                         </div>
                       );
