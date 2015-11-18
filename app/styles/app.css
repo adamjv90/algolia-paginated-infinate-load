@@ -10,8 +10,17 @@
 @import './spinner';
 @import './users';
 
+body, html, #content, .___iso-html___ {
+  height: 100%;
+  background-color: #F4F2F3;
+}
+
 body {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+input:focus {
+  outline: none!important;
 }
 
 .reset-list {
@@ -26,4 +35,13 @@ body {
 
 .un-select {
   user-select: none;
+}
+
+.imageloader {
+  opacity: 0;
+  transition: opacity .25s ease-in-out;
+}
+
+.imageloader.loaded {
+  opacity: 1;
 }

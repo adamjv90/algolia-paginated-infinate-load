@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 
-import Header from 'components/header';
-import Footer from 'components/footer';
-
 if (process.env.BROWSER) require('styles/app.css');
 
 class App extends Component {
@@ -44,12 +41,8 @@ class App extends Component {
     const { children } = this.props;
 
     return (
-      <div>
-        <Header />
-        <hr />
+      <div style={ { height: '100%' } }>
         { children }
-        <hr />
-        <Footer />
       </div>
     );
   }
