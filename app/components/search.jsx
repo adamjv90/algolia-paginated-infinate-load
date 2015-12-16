@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import update from 'react-addons-update';
 import { findDOMNode } from 'react-dom';
-import { first, isUndefined } from 'lodash';
+// import { first, isUndefined } from 'lodash';
 import { History } from 'react-router';
 import ImageLoader from 'react-imageloader';
-import Ad from 'components/ad';
+// import Ad from 'components/ad';
 import EqualLengthColumns from 'components/equal-length-column';
 import AlgoliaPager from 'components/algolia-pager';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
@@ -62,15 +62,20 @@ export default React.createClass({
     this.history.pushState(null, '/' + this.state.search);
   },
 
-  handleNext(page) {
-    this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
-  },
+  // handleNext(page) {
+  //   this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
+  // },
+  //
+  // handlePrevious(page) {
+  //   this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
+  // },
 
-  handlePrevious(page) {
+  handlePageInView(page) {
     this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
   },
 
   render() {
+    console.log('Search', 'render');
     const columnMargin = 10;
     const columnWidth = 300;
     const columnCount = Math.floor(this.state.availableWidth / columnWidth);
@@ -87,13 +92,9 @@ export default React.createClass({
           <div style={ { position: 'absolute', height: '100%', width: '100%' } }>
             <AlgoliaPager ref='pager' index='images' query={ this.props.params.query || '' } perPage={ 50 } page={ this.props.location.query.page ? parseInt(this.props.location.query.page, 10) : 0 } onNext={ this.handleNext } onPrevious={ this.handlePrevious } scrollOnUpdate={ this.props.location.action === 'POP' }>
               { (pages) => {
-                const firstPage = first(pages);
+                // const firstPage = first(pages);
                 return (
                   <div>
-                    { !isUndefined(firstPage) && firstPage.number > 0 ? <div style={ { textAlign: 'center', margin: '10px 0', cursor: 'pointer', color: '#74A9B0', fontFamily: 'Open Sans', fontSize: 14 } } onClick={ () => this.refs.pager.handlePrevious() }>
-                      <i style={ { fontSize: 20 } } className='fa fa-angle-up'></i> <span style={ { lineHeight: '20px' } }>page { firstPage.number }</span>
-                    </div> : <div /> }
-
                     { pages.map((page) => {
                       const cells = update(page.results.map((image) => {
                         const width = columnWidth;
@@ -109,7 +110,7 @@ export default React.createClass({
                           />
                         );
                       }), {
-                        $unshift: [<Ad mn='93476277' width={ 300 } height={ 250 } key='ad' />]
+                        // $unshift: [<Ad mn='93476277' width={ 300 } height={ 250 } key='ad' />]
                       });
 
                       return (

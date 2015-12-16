@@ -90,7 +90,7 @@ export default React.createClass({
   },
 
   componentDidMount() {
-    console.log(Ad);
+    // console.log(Ad);
     Ad.waitTillLoad().then(() => {
       console.log('loaded');
       Ad

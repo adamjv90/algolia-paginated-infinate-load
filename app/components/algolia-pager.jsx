@@ -39,22 +39,48 @@ class AlgoliaPager extends Component {
 
   componentDidMount() {
     if (!this.state.pages.length) {
-      this.query(this.state).then((page) => {
+      let promises = [this.query(this.state)];
+      if (this.state.page > 0) {
+        promises = update(promises, {
+          $unshift: [this.query(update(this.state, { page: { $set: this.state.page - 1 } }))]
+        });
+      }
+
+      Promise.all(promises).then((pages) => {
         this.setState({
-          pages: [page]
+          pages: pages
         });
       });
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.doQueriesMatch(prevProps)) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.doQueriesMatch(this.props, prevProps)) {
+      // if browser hitsory change
       if (this.props.page !== prevProps.page && this.props.scrollOnUpdate) {
         velocity(findDOMNode(this.refs[this.props.page]), 'scroll', {
           container: findDOMNode(this.refs.scroll),
           duration: 200,
           delay: 0
         });
+      } else {
+        // scroll to next page when navigating to previose
+        if (prevState.page > this.state.page) {
+          velocity(findDOMNode(this.refs[this.state.page + 1]), 'scroll', {
+            container: findDOMNode(this.refs.scroll),
+            duration: 0,
+            delay: 0
+          });
+        } else {
+          // scroll to current page when loading in a page greater then 0 because we preload previous page
+          if (!prevState.pages.length && this.state.page > 0 && this.state.pages.length) {
+            velocity(findDOMNode(this.refs[this.state.page]), 'scroll', {
+              container: findDOMNode(this.refs.scroll),
+              duration: 0,
+              delay: 0
+            });
+          }
+        }
       }
     } else {
       // velocity(findDOMNode(this.refs[first(this.state.pages).number]), 'scroll', {
@@ -67,7 +93,7 @@ class AlgoliaPager extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (!this.doQueriesMatch(newProps) || (this.doQueriesMatch(newProps) && !this.containsPage(newProps.page))) {
+    if (!this.doQueriesMatch(this.props, newProps) || (this.doQueriesMatch(this.props, newProps) && !this.containsPage(newProps.page) && this.state.pages.length)) {
       this.setState(update(newProps, { loading: { $set: true }, pages: { $set: [] } }));
       this.query(newProps).then((page) => {
         findDOMNode(this.refs.scroll).scrollTop = 0;
@@ -81,8 +107,8 @@ class AlgoliaPager extends Component {
     }
   }
 
-  doQueriesMatch(props) {
-    return this.state.query === props.query;
+  doQueriesMatch(props, newProps) {
+    return props.query === newProps.query;
   }
 
   containsPage(page) {
@@ -116,14 +142,19 @@ class AlgoliaPager extends Component {
         loading: { $set: true }
       }));
 
-      this.query(update(this.state, { page: { $set: curerntPage.number - 1 } })).then((page) => {
-        this.setState(update(this.state, {
-          page: { $set: last(this.state.pages).number },
-          loading: { $set: false },
-          pages: { $unshift: [page] }
-        }));
+      const promises = [this.query(update(this.state, { page: { $set: curerntPage.number - 1 } }))];
+      // if (curerntPage.number - 2 >= 0) {
+      //   promises = update(promises, {
+      //     $push: [this.query(update(this.state, { page: { $set: curerntPage.number - 2 } }))]
+      //   });
+      // }
 
-        this.props.onPrevious(page);
+      Promise.all(promises).then((pages) => {
+        this.setState(update(this.state, {
+          page: { $set: curerntPage.number - 1 },
+          loading: { $set: false },
+          pages: { $unshift: pages }
+        }));
       });
     }
   }
@@ -134,22 +165,22 @@ class AlgoliaPager extends Component {
       this.setState(update(this.state, {
         loading: { $set: true }
       }));
+
       this.query(update(this.state, { page: { $set: curerntPage.number + 1 } })).then((page) => {
         this.setState(update(this.state, {
           page: { $set: curerntPage.number + 1 },
           loading: { $set: false },
           pages: { $push: [page] }
         }));
-
-        this.props.onNext(page);
       });
     }
   }
 
   render() {
+    console.log('AlgoliaPager', 'render', this.state.pages);
     return (
       <div style={ { height: '100%', width: '100%' } }>
-        <ScrollTopBottomNotifier ref='scroll' onTop={ () => {} } onBottom={ this.handleNext.bind(this) } offset={ 700 }>
+        <ScrollTopBottomNotifier ref='scroll' onTop={ this.handlePrevious.bind(this) } onBottom={ this.handleNext.bind(this) } offset={ 500 }>
           { this.props.children(this.state.pages) }
         </ScrollTopBottomNotifier>
       </div>
