@@ -95,13 +95,22 @@ class AlgoliaPager extends Component {
   componentWillReceiveProps(newProps) {
     if (!this.doQueriesMatch(this.props, newProps) || (this.doQueriesMatch(this.props, newProps) && !this.containsPage(newProps.page) && this.state.pages.length)) {
       this.setState(update(newProps, { loading: { $set: true }, pages: { $set: [] } }));
-      this.query(newProps).then((page) => {
+
+      let promises = [this.query(newProps)];
+
+      if (!this.doQueriesMatch(this.props, newProps) && newProps.page > 0) {
+        promises = update(promises, {
+          $unshift: [this.query(update(newProps, { page: { $set: newProps.page - 1 } }))]
+        });
+      }
+
+      Promise.all(promises).then((pages) => {
         findDOMNode(this.refs.scroll).scrollTop = 0;
         this.setState(update(this.state, {
           page: { $set: newProps.page || 0 },
           query: { $set: newProps.query },
           loading: { $set: false },
-          pages: { $set: [page] }
+          pages: { $set: pages }
         }));
       });
     }
