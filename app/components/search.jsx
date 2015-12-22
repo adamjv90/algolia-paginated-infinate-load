@@ -8,6 +8,7 @@ import ImageLoader from 'react-imageloader';
 // import Ad from 'components/ad';
 import EqualLengthColumns from 'components/equal-length-column';
 import AlgoliaPager from 'components/algolia-pager';
+import ListView from 'components/list-view';
 import LinkedStateMixin from 'react-addons-linked-state-mixin';
 
 const domain = 'http://o.aolcdn.com/smp/is';
@@ -71,12 +72,27 @@ export default React.createClass({
   //   this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
   // },
 
+  reachedListViewTop() {
+    this.refs.pager.reachedTop();
+  },
+
+  reachedListViewBottom() {
+    this.refs.pager.reachedBottom();
+  },
+
   handlePageInView(page) {
     this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
   },
 
+  navigateToRows(rows) {
+    const page = this.props.location.query.page ? parseInt(this.props.location.query.page, 10) : 0;
+    if (rows[0] && rows[0].number && page !== rows[0].number) {
+      this.history.replaceState(null, '/' + (this.props.params.query || '') + '?page=' + rows[0].number);
+    }
+  },
+
   render() {
-    console.log('Search', 'render');
+    console.log('Search', 'render', this.state);
     const columnMargin = 10;
     const columnWidth = 300;
     const columnCount = Math.floor(this.state.availableWidth / columnWidth);
@@ -87,8 +103,8 @@ export default React.createClass({
     return (
       <div style={ { display: 'flex', flexDirection: 'column', height: '100%', width: '100%' } }>
         <div style={ { background: '#999', width: '100%', margin: '0 auto', overflow: 'hidden' } }>
-          <form onSubmit={ this.handleSearch }>
-            <input ref='search' placeholder='Search' style={ { textAlign: 'center', fontFamily: 'Open Sans', fontSize: 20, padding: '10px 0', oultine: 'none!important', width: '100%', margin: 0, border: 0 } } valueLink={ this.linkState('search') } />
+          <form onSubmit={ this.handleSearch } autoComplete='off'>
+            <input ref='search' autoComplete='off' placeholder='Search' style={ { textAlign: 'center', fontFamily: 'Open Sans', fontSize: 20, padding: '10px 0', oultine: 'none!important', width: '100%', margin: 0, border: 0 } } valueLink={ this.linkState('search') } />
           </form>
         </div>
         <div style={ { flex: 1, position: 'relative' } }>
@@ -97,25 +113,30 @@ export default React.createClass({
               { (pages) => {
                 // const firstPage = first(pages);
                 return (
-                  <div>
+                  <ListView ref='scroll' onTop={ this.reachedListViewTop } onBottom={ this.reachedListViewBottom } reachedOffset={ 500 } onRowsRendered={ this.navigateToRows }>
                     { pages.map((page) => {
                       const cells = update(page.results.map((image) => {
                         const width = columnWidth;
                         const height = width / image.width * image.height;
-                        return (
-                          <ImageLoader
-                            key={ image.objectID }
-                            src={ resize(image.src, width) }
-                            width={ width }
-                            height={ height }
-                            style={ { width: width, height: height } }
-                            wrapper={ React.DOM.div }
-                          />
-                        );
+                        if (height) {
+                          return (
+                            <ImageLoader
+                              key={ image.objectID }
+                              src={ resize(image.src, width) }
+                              width={ width }
+                              height={ height }
+                              style={ { width: width, height: height } }
+                              wrapper={ React.DOM.div }
+                            />
+                          );
+                        } else {
+                          return false;
+                        }
                       }), {
                         // $unshift: [<Ad mn='93476277' width={ 300 } height={ 250 } key='ad' />]
                       });
 
+                      // using a static method of the EqualLengthColumns component we can assign calculate columns and height of container so we can dynamically calculate rows in view before they exist in dom
                       const columns = EqualLengthColumns.prototype.constructor.statics.toColumns(cells, columnCount, columnMargin);
 
                       return (
@@ -125,7 +146,7 @@ export default React.createClass({
                         </div>
                       );
                     }) }
-                  </div>
+                  </ListView>
                 );
               } }
             </AlgoliaPager>

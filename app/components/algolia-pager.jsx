@@ -3,7 +3,6 @@ import { findDOMNode } from 'react-dom';
 import update from 'react-addons-update';
 import algoliasearch from 'algoliasearch';
 import { first, last, findWhere } from 'lodash';
-import ScrollTopBottomNotifier from 'components/scroll-top-bottom-notifier';
 import canUseDom from 'can-use-dom';
 
 const velocity = canUseDom ? require('velocity-animate') : undefined;
@@ -144,7 +143,7 @@ class AlgoliaPager extends Component {
     });
   }
 
-  handlePrevious() {
+  reachedTop() {
     const curerntPage = first(this.state.pages);
     if (!this.state.loading && curerntPage.number > 0) {
       this.setState(update(this.state, {
@@ -168,7 +167,7 @@ class AlgoliaPager extends Component {
     }
   }
 
-  handleNext() {
+  reachedBottom() {
     const curerntPage = last(this.state.pages);
     if (!this.state.loading && curerntPage.hasNext) {
       this.setState(update(this.state, {
@@ -185,17 +184,11 @@ class AlgoliaPager extends Component {
     }
   }
 
-  handleScroll(e) {
-    console.log(e);
-  }
-
   render() {
     console.log('AlgoliaPager', 'render', this.state.pages, this.props.children(this.state.pages));
     return (
       <div style={ { height: '100%', width: '100%' } }>
-        <ScrollTopBottomNotifier ref='scroll' onScroll={ this.handleScroll.bind(this) } onTop={ this.handlePrevious.bind(this) } onBottom={ this.handleNext.bind(this) } offset={ 500 }>
-          { this.props.children(this.state.pages) }
-        </ScrollTopBottomNotifier>
+        { this.props.children(this.state.pages) }
       </div>
     );
   }
