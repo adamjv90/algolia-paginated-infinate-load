@@ -185,11 +185,15 @@ class AlgoliaPager extends Component {
     }
   }
 
+  handleScroll(e) {
+    // console.log(e);
+  }
+
   render() {
-    console.log('AlgoliaPager', 'render', this.state.pages);
+    console.log('AlgoliaPager', 'render', this.state.pages, this.props.children(this.state.pages));
     return (
       <div style={ { height: '100%', width: '100%' } }>
-        <ScrollTopBottomNotifier ref='scroll' onTop={ this.handlePrevious.bind(this) } onBottom={ this.handleNext.bind(this) } offset={ 500 }>
+        <ScrollTopBottomNotifier ref='scroll' onScroll={ this.handleScroll.bind(this) } onTop={ this.handlePrevious.bind(this) } onBottom={ this.handleNext.bind(this) } offset={ 500 }>
           { this.props.children(this.state.pages) }
         </ScrollTopBottomNotifier>
       </div>

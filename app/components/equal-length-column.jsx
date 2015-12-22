@@ -28,34 +28,35 @@ function leaseIndexValue(array) {
 
 class EqualLengthColumns extends Component {
   static propTypes = {
-    children: PropTypes.node,
-    columns: PropTypes.number,
+    columns: PropTypes.array,
     margin: PropTypes.number
   }
 
-  getColumns() {
-    let columns = Immutable.fromJS(fill(Array(this.props.columns), {
-      height: 0,
-      rows: new Immutable.List([])
-    }));
+  static statics = {
+    toColumns: (cells, columnCount, margin) => {
+      let columns = Immutable.fromJS(fill(Array(columnCount), {
+        height: 0,
+        rows: new Immutable.List([])
+      }));
 
-    for (let i = 0, len = this.props.children.length; i < len; i++) {
-      const child = this.props.children[i];
-      const columnIndex = leaseIndexValue(pluck(columns.toJS(), 'height'));
-      const rowHeight = isNumber(child.props.height) ? child.props.height : parseInt(child.props.height, 1);
-      let column = columns.get(columnIndex);
+      for (let i = 0, len = cells.length; i < len; i++) {
+        const child = cells[i];
+        const columnIndex = leaseIndexValue(pluck(columns.toJS(), 'height'));
+        const rowHeight = isNumber(child.props.height) ? child.props.height : parseInt(child.props.height, 1);
+        let column = columns.get(columnIndex);
 
-      column = column.set('height', column.get('height') + rowHeight + this.props.margin);
-      column = column.set('rows', column.get('rows').push(child));
+        column = column.set('height', column.get('height') + rowHeight + margin);
+        column = column.set('rows', column.get('rows').push(child));
 
-      columns = columns.set(columnIndex, column);
+        columns = columns.set(columnIndex, column);
+      }
+
+      return columns.toJS();
     }
-
-    return columns.toJS();
-  }
+  };
 
   render() {
-    const columns = this.getColumns();
+    const columns = this.props.columns;
 
     return (
       <div style={ { width: '100%', height: '100%', display: 'flex', flexDirection: 'row' } }>

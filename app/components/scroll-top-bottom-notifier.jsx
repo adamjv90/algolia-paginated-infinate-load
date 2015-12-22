@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import isFunction from 'lodash/lang/isFunction';
 import { findDOMNode } from 'react-dom';
 
 class ScrollTopBottomNotifier extends Component {
@@ -6,7 +7,8 @@ class ScrollTopBottomNotifier extends Component {
     children: PropTypes.node,
     onBottom: PropTypes.func,
     onTop: PropTypes.func,
-    offset: PropTypes.number
+    offset: PropTypes.number,
+    onScroll: PropTypes.func
   }
 
   constructor(props) {
@@ -45,6 +47,10 @@ class ScrollTopBottomNotifier extends Component {
       if (e.target.scrollTop <= 0) {
         this.props.onTop();
       }
+    }
+
+    if (isFunction(this.props.onScroll)) {
+      this.props.onScroll(e.target.scrollTop);
     }
   }
 

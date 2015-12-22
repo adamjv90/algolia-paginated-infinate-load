@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import update from 'react-addons-update';
+import pluck from 'lodash/collection/pluck';
 import { findDOMNode } from 'react-dom';
 // import { first, isUndefined } from 'lodash';
 import { History } from 'react-router';
@@ -81,6 +82,8 @@ export default React.createClass({
     const columnCount = Math.floor(this.state.availableWidth / columnWidth);
     const conatinerWidth = (columnWidth * columnCount) + ((columnCount - 1) * columnMargin);
 
+    const pageHeadingHeight = 42;
+
     return (
       <div style={ { display: 'flex', flexDirection: 'column', height: '100%', width: '100%' } }>
         <div style={ { background: '#999', width: '100%', margin: '0 auto', overflow: 'hidden' } }>
@@ -113,12 +116,12 @@ export default React.createClass({
                         // $unshift: [<Ad mn='93476277' width={ 300 } height={ 250 } key='ad' />]
                       });
 
+                      const columns = EqualLengthColumns.prototype.constructor.statics.toColumns(cells, columnCount, columnMargin);
+
                       return (
-                        <div style={ { width: conatinerWidth, margin: '0 auto' } } number={ page.number } ref={ page.number } key={ page.number }>
+                        <div style={ { width: conatinerWidth, margin: '0 auto', height: Math.ceil(Math.max.apply(Math, pluck(columns, 'height'))) + pageHeadingHeight } } number={ page.number } ref={ page.number } key={ page.number }>
                           <div style={ { backgroundColor: '#F89688', borderRadius: 2, color: '#ffffff', fontFamily: 'Open Sans', padding: 5, marginBottom: 10 } }>Page { page.number + 1 } { this.props.params.query ? 'for ' + this.props.params.query : '' }</div>
-                          <EqualLengthColumns columns={ columnCount } margin={ columnMargin }>
-                            { cells }
-                          </EqualLengthColumns>
+                          <EqualLengthColumns columns={ columns } margin={ columnMargin } />
                         </div>
                       );
                     }) }
