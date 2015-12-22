@@ -186,7 +186,7 @@ class AlgoliaPager extends Component {
   }
 
   handleScroll(e) {
-    // console.log(e);
+    console.log(e);
   }
 
   render() {
