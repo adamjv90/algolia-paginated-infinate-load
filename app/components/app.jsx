@@ -69,7 +69,6 @@ class App extends Component {
           this.previousChildren :
           this.props.children
         }
-
         { isModal && (
           <Modal returnTo={ location.state.returnTo } location={ location }>
             { this.props.children }

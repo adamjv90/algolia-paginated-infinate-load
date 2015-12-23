@@ -124,13 +124,13 @@ class ScrollTopBottomNotifier extends Component {
     this.setRowsInView(this.props.children);
   }
 
-  reduceRowHeights(rows) {
-    let totalHeight = 0;
-    for (let i = 0, len = rows.length; i < len; i++) {
-      totalHeight = totalHeight + rows[i].props.style.height;
-    }
-    return totalHeight;
-  }
+  // reduceRowHeights(rows) {
+  //   let totalHeight = 0;
+  //   for (let i = 0, len = rows.length; i < len; i++) {
+  //     totalHeight = totalHeight + rows[i].props.style.height;
+  //   }
+  //   return totalHeight;
+  // }
 
   // beforeHeight() {
   //   const firstRow = first(this.state.rows) + 1;

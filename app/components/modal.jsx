@@ -17,7 +17,6 @@ export default React.createClass({
   },
 
   render() {
-    console.log(this.props);
     const dimensions = this.calculateSize();
     const klass = classNames(
       'app--modal',
