@@ -8,6 +8,10 @@ export default (
       paths: ['/', '/:query'],
       component: require('./components/search')
     }) }
+    { generateRoute({
+      paths: ['/image/:objectID'],
+      component: require('./components/image')
+    }) }
     <Route path='*' component={ require('./pages/not-found') } />
   </Route>
 );

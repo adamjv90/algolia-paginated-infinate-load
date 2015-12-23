@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
+import { Link, History } from 'react-router';
 import update from 'react-addons-update';
 import pluck from 'lodash/collection/pluck';
 import filter from 'lodash/collection/filter';
 // import { findDOMNode } from 'react-dom';
 // import { first, isUndefined } from 'lodash';
-import { History } from 'react-router';
 import ImageLoader from 'react-imageloader';
 // import Ad from 'components/ad';
 import EqualLengthColumns from 'components/equal-length-column';
@@ -128,14 +128,22 @@ export default React.createClass({
                         const height = width / image.width * image.height;
                         if (height) {
                           return (
-                            <ImageLoader
+                            <Link
                               key={ image.objectID }
-                              src={ resize(image.src, width) }
+                              to={ `/image/${image.objectID}` }
+                              state={ { modal: true, returnTo: this.props.location.pathname + (this.props.location.search ? this.props.location.search : '') } }
                               width={ width }
                               height={ height }
-                              style={ { width: width, height: height } }
-                              wrapper={ React.DOM.div }
-                            />
+                              style={ { width: width, height: height, display: 'block' } }
+                            >
+                              <ImageLoader
+                                src={ resize(image.src, width) }
+                                width={ width }
+                                height={ height }
+                                style={ { width: width, height: height } }
+                                wrapper={ React.DOM.div }
+                              />
+                          </Link>
                           );
                         } else {
                           return false;

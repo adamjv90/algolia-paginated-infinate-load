@@ -59,7 +59,7 @@ class AlgoliaPager extends Component {
       if (this.props.page !== prevProps.page && this.props.scrollOnUpdate) {
         velocity(findDOMNode(this.refs[this.props.page]), 'scroll', {
           container: findDOMNode(this.refs.scroll),
-          duration: 200,
+          duration: 0,
           delay: 0
         });
       } else {
