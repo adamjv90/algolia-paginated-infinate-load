@@ -10,8 +10,7 @@ class ScrollTopBottomNotifier extends Component {
     children: PropTypes.node,
     onBottom: PropTypes.func,
     onTop: PropTypes.func,
-    reachedOffset: PropTypes.number,
-    onRowsRendered: PropTypes.func
+    onChange: PropTypes.func
   }
 
   constructor(props) {
@@ -77,7 +76,7 @@ class ScrollTopBottomNotifier extends Component {
       //     $push: [last(rowsToRender) + 1]
       //   });
       // }
-      this.props.onRowsRendered(rowsToRender);
+      this.props.onChange(rowsToRender);
       this.setState({ rows: rowsToRender });
     } else {
       this.setState({ rows: children });
@@ -113,7 +112,8 @@ class ScrollTopBottomNotifier extends Component {
   }
 
   handleScroll(e) {
-    if (e.target.scrollTop + this.getViewportHeight() + this.props.reachedOffset >= e.target.scrollHeight) {
+    // 500 is threshold in px from bottom before onBottom is called, decided to hard code this to make things more simple
+    if (e.target.scrollTop + this.getViewportHeight() + 500 >= e.target.scrollHeight) {
       this.props.onBottom();
     } else {
       if (e.target.scrollTop <= 0) {

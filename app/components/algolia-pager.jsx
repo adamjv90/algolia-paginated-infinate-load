@@ -185,7 +185,7 @@ class AlgoliaPager extends Component {
   }
 
   render() {
-    console.log('AlgoliaPager', 'render', this.state.pages, this.props.children(this.state.pages));
+    // console.log('AlgoliaPager', 'render', this.state.pages, this.props.children(this.state.pages));
     return (
       <div style={ { height: '100%', width: '100%' } }>
         { this.props.children(this.state.pages) }

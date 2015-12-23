@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import update from 'react-addons-update';
 import pluck from 'lodash/collection/pluck';
-import { findDOMNode } from 'react-dom';
+// import { findDOMNode } from 'react-dom';
 // import { first, isUndefined } from 'lodash';
 import { History } from 'react-router';
 import ImageLoader from 'react-imageloader';
@@ -49,9 +49,14 @@ export default React.createClass({
     window.removeEventListener('resize', this.setAvailableWidth);
   },
 
-  componentDidUpdate() {
-    if (this.props.location.action === 'POP') {
-      findDOMNode(this.refs.search).value = this.props.params.query || '';
+  componentDidUpdate(prevProps) {
+    // console throws error if setstate happens here but it seems like the best way to update search term on pop of history
+    this.updateSearch(prevProps);
+  },
+
+  updateSearch(prevProps) {
+    if (this.props.params.query !== prevProps.params.query) {
+      this.setState({ search: this.props.params.query });
     }
   },
 
@@ -84,7 +89,7 @@ export default React.createClass({
     this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
   },
 
-  navigateToRows(rows) {
+  handleListViewChange(rows) {
     const page = this.props.location.query.page ? parseInt(this.props.location.query.page, 10) : 0;
     if (rows[0] && rows[0].number && page !== rows[0].number) {
       this.history.replaceState(null, '/' + (this.props.params.query || '') + '?page=' + rows[0].number);
@@ -92,7 +97,7 @@ export default React.createClass({
   },
 
   render() {
-    console.log('Search', 'render', this.state);
+    // console.log('Search', 'render', this.state.search);
     const columnMargin = 10;
     const columnWidth = 300;
     const columnCount = Math.floor(this.state.availableWidth / columnWidth);
@@ -113,7 +118,7 @@ export default React.createClass({
               { (pages) => {
                 // const firstPage = first(pages);
                 return (
-                  <ListView ref='scroll' onTop={ this.reachedListViewTop } onBottom={ this.reachedListViewBottom } reachedOffset={ 500 } onRowsRendered={ this.navigateToRows }>
+                  <ListView ref='scroll' onTop={ this.reachedListViewTop } onBottom={ this.reachedListViewBottom } onChange={ this.handleListViewChange }>
                     { pages.map((page) => {
                       const cells = update(page.results.map((image) => {
                         const width = columnWidth;
