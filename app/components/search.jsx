@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import update from 'react-addons-update';
 import pluck from 'lodash/collection/pluck';
+import filter from 'lodash/collection/filter';
 // import { findDOMNode } from 'react-dom';
 // import { first, isUndefined } from 'lodash';
 import { History } from 'react-router';
@@ -91,6 +92,8 @@ export default React.createClass({
 
   handleListViewChange(rows) {
     const page = this.props.location.query.page ? parseInt(this.props.location.query.page, 10) : 0;
+    // need to figure out how to call this only when there are rows to display, at one point i was recieving an error about rows[0] beign undefined
+    // pass in child properties as row elements, thats where number is coming from
     if (rows[0] && rows[0].number && page !== rows[0].number) {
       this.history.replaceState(null, '/' + (this.props.params.query || '') + '?page=' + rows[0].number);
     }
@@ -120,7 +123,7 @@ export default React.createClass({
                 return (
                   <ListView ref='scroll' onTop={ this.reachedListViewTop } onBottom={ this.reachedListViewBottom } onChange={ this.handleListViewChange }>
                     { pages.map((page) => {
-                      const cells = update(page.results.map((image) => {
+                      const cells = update(filter(page.results, 'height').map((image) => {
                         const width = columnWidth;
                         const height = width / image.width * image.height;
                         if (height) {
