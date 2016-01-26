@@ -1,7 +1,13 @@
-@font-face {
-  font-family: $font-0;
-  src: $url-0;
-  src: $url-1 format('embedded-opentype'), $url-2 format('woff'), $url-3 format('truetype'), $url-4 format('svg');
-  font-weight: normal;
-  font-style: normal;
+@define-mixin font $font-0, $url-0, $url-1, $url-2, $url-3 {
+  @font-face {
+    font-family: $font-0;
+    src: $url-0;
+    src: $url-1 format('embedded-opentype'), $url-2 format('woff'), $url-3 format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
 }
+
+@mixin font 'DroidSerif', url(../fonts/DroidSerif-Regular-webfont.eot), url(../fonts/DroidSerif-Regular-webfont.eot?#iefix), url(../fonts/DroidSerif-Regular-webfont.woff), url(../fonts/DroidSerif-Regular-webfont.ttf);
+@mixin font 'Hurme', url(../fonts/hurme_design_-_hurmegeometricsans1_regular-webfont.eot), url(../fonts/hurme_design_-_hurmegeometricsans1_regular-webfont.eot?#iefix), url(../fonts/hurme_design_-_hurmegeometricsans1_regular-webfont.woff), url(../fonts/hurme_design_-_hurmegeometricsans1_regular-webfont.ttf);
+@mixin font 'Smp', url(../fonts/smp.eot), url(../fonts/smp.eot?#iefix), url(../fonts/smp.woff), url(../fonts/smp.ttf);

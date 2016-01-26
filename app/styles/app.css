@@ -10,14 +10,25 @@
 @import './spinner';
 @import './users';
 
-body, html, #content, .___iso-html___ {
+body, html, #content, #content > div {
   height: 100%;
-  background-color: #F4F2F3;
 }
 
-body {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
 }
+.clearfix {
+  display: inline-block;
+}
+/* start commented backslash hack \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* close commented backslash hack */
 
 input:focus {
   outline: none!important;
@@ -44,4 +55,12 @@ input:focus {
 
 .imageloader.loaded {
   opacity: 1;
+}
+
+.element-toggle-target {
+  display: none;
+}
+
+.element-toggle-target-visible {
+  display: inline-block;
 }

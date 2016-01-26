@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { delay, isUndefined, uniqueId } from 'lodash';
 // import debug from 'debug';
 import { EventEmitter } from 'events';
@@ -40,7 +40,7 @@ const Ad = (() => {
     return new Promise((resolve) => {
       // debug('app:ad')('loading ad', mn, width, height, document.getElementById(id));
 
-      const scanForAdLoaded = function(_name, _width, _height) {
+      const scanForAdLoaded = function (_name, _width, _height) {
         if (_name === id) {
           resolve({ width: _width, height: _height });
         }
@@ -58,8 +58,8 @@ const Ad = (() => {
   }
 
   return {
-    waitTillLoad: waitTillLoad,
-    load: load
+    waitTillLoad,
+    load
   };
 })();
 
@@ -68,14 +68,20 @@ export default React.createClass({
 
   propTypes: {
     mn: React.PropTypes.string.isRequired,
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
+    width: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]),
+    height: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]),
     handleResize: React.PropTypes.func
   },
 
   getDefaultProps() {
     return {
-      handleResize: function() {}
+      handleResize() {}
     };
   },
 
@@ -85,20 +91,28 @@ export default React.createClass({
     };
   },
 
-  shouldComponentUpdate() {
-    return false;
-  },
+  // shouldComponentUpdate() {
+  //   return false;
+  // },
 
   componentDidMount() {
     // console.log(Ad);
     Ad.waitTillLoad().then(() => {
-      console.log('loaded');
       Ad
         .load(this.props.mn, this.props.width, this.props.height, 'ad-' + this.state.id);
       // .then(this.handleResize);
     });
 
     // HistoryLocation.addChangeListener(this.handleHistoryChange);
+  },
+
+  componentDidUpdate() {
+    console.log('did update');
+    Ad.waitTillLoad().then(() => {
+      Ad
+        .load(this.props.mn, this.props.width, this.props.height, 'ad-' + this.state.id);
+      // .then(this.handleResize);
+    });
   },
 
   componentWillUnmount() {

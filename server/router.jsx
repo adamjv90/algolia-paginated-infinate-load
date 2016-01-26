@@ -1,27 +1,52 @@
 import debug from 'debug';
+
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import Helmet from 'react-helmet';
+
 import createFlux from 'flux/createFlux';
 
+import ServerHTML from './server-html';
 import ApiClient from '../shared/api-client';
 import universalRender from '../shared/universal-render';
 
-export default function *() {
+export default async function (ctx) {
   // Init alt instance
-  const client = new ApiClient(this.get('cookie'));
+  const client = new ApiClient(ctx.get('cookie'));
   const flux = createFlux(client);
 
   // Get request locale for rendering
-  const locale = this.cookies.get('_lang') || this.acceptsLanguages(require('./config/init').locales) || 'en';
+  const locale = ctx.cookies.get('_lang') ||
+    ctx.acceptsLanguages(require('./config/init').locales) ||
+    'en';
+
   const { messages } = require(`data/${locale}`);
+
+  // Get auth-token from cookie
+  const username = ctx.cookies.get('_auth');
 
   // Populate store with locale
   flux
     .getActions('locale')
-    .switchLocaleSuccess({ locale, messages });
+    .switchLocale({ locale, messages });
+
+  // Populate store with auth
+  if (username) {
+    flux
+      .getActions('session')
+      .update({ username });
+  }
 
   debug('dev')(`locale of request: ${locale}`);
 
   try {
-    const { body, title } = yield universalRender({ flux, location: this.request.url });
+    const { body, statusCode, description } =
+      await universalRender({ flux, location: ctx.request.url });
+
+    const head = Helmet.rewind();
+    const meta = head ? head.meta.toComponent() : '';
+    const links = head ? head.link.toComponent() : '';
+    const title = head ? head.title.toComponent(): <title>Style Me Pretty</title>;
 
     // Assets name are found into `webpack-stats`
     const assets = require('./webpack-stats.json');
@@ -32,7 +57,9 @@ export default function *() {
     }
 
     debug('dev')('return html content');
-    yield this.render('main', { body, assets, locale, title });
+    const props = { body, assets, locale, meta, links, assets, title };
+    ctx.status = statusCode;
+    ctx.body = '<!DOCTYPE html>' + renderToString(<ServerHTML { ...props } />);
   } catch (err) {
     // Render 500 error page from server
     const { error, redirect } = err;
@@ -41,7 +68,7 @@ export default function *() {
     // Handle component `onEnter` transition
     if (redirect) {
       const { pathname, search } = redirect;
-      return this.redirect(pathname + search);
+      return ctx.redirect(pathname + search);
     }
 
     throw err;

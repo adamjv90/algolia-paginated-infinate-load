@@ -18,8 +18,13 @@ function resize(src, width, height) {
   if (!src) return src;
   const extRx = /\.(gif|jpg|jpeg|tiff|png)$/i;
   const ext = typeof src === 'string' ? src.match(extRx) : '';
-  const _src = typeof src === 'string' ? src.replace(domain, '').replace(/\$![0-9]*?x?[0-9]*?\.[^$]+$/, Array.isArray(ext) && ext.length ? ext[0] : '') : '';
-  return ext !== null ? domain + _src.replace(extRx, '') + '$!' + (width ? width : '') + 'x' + (height ? height : '') + ext[0] : false;
+  const _src = typeof src === 'string'
+    ? src.replace(domain, '').replace(/\$![0-9]*?x?[0-9]*?\.[^$]+$/, Array.isArray(ext) && ext.length
+      ? ext[0] : '')
+    : '';
+  return ext !== null
+    ? domain + _src.replace(extRx, '') + '$!' + (width ? width : '') + 'x' + (height ? height : '') + ext[0]
+    : false;
 }
 
 export default React.createClass({
@@ -67,7 +72,7 @@ export default React.createClass({
 
   handleSearch(e) {
     e.preventDefault();
-    this.history.pushState(null, '/' + this.state.search);
+    this.history.pushState(null, '/search/images/' + this.state.search);
   },
 
   // handleNext(page) {
@@ -87,7 +92,7 @@ export default React.createClass({
   },
 
   handlePageInView(page) {
-    this.history.replaceState(null, '/' + page.query + '?page=' + page.number);
+    this.history.replaceState(null, '/search/images/' + page.query + '?page=' + page.number);
   },
 
   handleListViewChange(rows) {
@@ -95,7 +100,7 @@ export default React.createClass({
     // need to figure out how to call this only when there are rows to display, at one point i was recieving an error about rows[0] beign undefined
     // pass in child properties as row elements, thats where number is coming from
     if (rows[0] && rows[0].number && page !== rows[0].number) {
-      this.history.replaceState(null, '/' + (this.props.params.query || '') + '?page=' + rows[0].number);
+      this.history.replaceState(null, '/search/images/' + (this.props.params.query || '') + '?page=' + rows[0].number);
     }
   },
 
@@ -119,6 +124,7 @@ export default React.createClass({
           <div style={ { position: 'absolute', height: '100%', width: '100%' } }>
             <AlgoliaPager ref='pager' index='images' query={ this.props.params.query || '' } perPage={ 50 } page={ this.props.location.query.page ? parseInt(this.props.location.query.page, 10) : 0 } onNext={ this.handleNext } onPrevious={ this.handlePrevious } scrollOnUpdate={ this.props.location.action === 'POP' }>
               { (pages) => {
+                console.log('i haz pages', pages);
                 // const firstPage = first(pages);
                 return (
                   <ListView ref='scroll' onTop={ this.reachedListViewTop } onBottom={ this.reachedListViewBottom } onChange={ this.handleListViewChange }>
@@ -134,15 +140,13 @@ export default React.createClass({
                               state={ { modal: true, returnTo: this.props.location.pathname + (this.props.location.search ? this.props.location.search : '') } }
                               width={ width }
                               height={ height }
-                              style={ { width: width, height: height, display: 'block' } }
-                            >
+                              style={ { width, height, display: 'block' } }>
                               <ImageLoader
                                 src={ resize(image.src, width) }
                                 width={ width }
                                 height={ height }
-                                style={ { width: width, height: height } }
-                                wrapper={ React.DOM.div }
-                              />
+                                style={ { width, height } }
+                                wrapper={ React.DOM.div } />
                           </Link>
                           );
                         } else {

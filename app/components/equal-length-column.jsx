@@ -42,7 +42,9 @@ class EqualLengthColumns extends Component {
       for (let i = 0, len = cells.length; i < len; i++) {
         const child = cells[i];
         const columnIndex = leaseIndexValue(pluck(columns.toJS(), 'height'));
-        const rowHeight = isNumber(child.props.height) ? child.props.height : parseInt(child.props.height, 1);
+        const rowHeight = isNumber(child.props.height)
+          ? child.props.height
+          : parseInt(child.props.height, 1);
         let column = columns.get(columnIndex);
 
         column = column.set('height', column.get('height') + rowHeight + margin);
@@ -62,7 +64,12 @@ class EqualLengthColumns extends Component {
       <div style={ { width: '100%', height: '100%', display: 'flex', flexDirection: 'row' } }>
         { columns.map((column, i) => {
           return (
-            <div key={ i } style={ { flex: 1, marginLeft: i % this.props.columns === 0 ? 0 : this.props.margin } }>
+            <div key={ i } style={ {
+              flex: 1,
+              marginLeft: i % this.props.columns === 0
+                ? 0
+                : this.props.margin
+            } }>
               { column.rows.map((row, ii) => {
                 return <div key={ ii } style={ { marginBottom: this.props.margin } }>{ row }</div>;
               }) }

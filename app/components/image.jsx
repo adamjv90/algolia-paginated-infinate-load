@@ -9,11 +9,15 @@ export default React.createClass({
     params: PropTypes.object
   },
 
+  navigateTo() {
+    this.history.replaceState(this.props.location.state, '/image/' + (parseInt(this.props.params.objectID, 10) + 1));
+  },
+
   render() {
     return (
       <div>
         Image ID: { this.props.params.objectID }
-        <div onClick={ () => this.history.replaceState(this.props.location.state, '/image/' + (parseInt(this.props.params.objectID, 10) + 1)) }>Next</div>
+        <div onClick={ this.navigateTo }>Next</div>
       </div>
     );
   }

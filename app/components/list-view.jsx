@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import canUseDom from 'can-use-dom';
 import update from 'react-addons-update';
+import bind from 'lodash/function/bind';
 // import first from 'lodash/array/first';
 // import last from 'lodash/array/last';
 import { findDOMNode } from 'react-dom';
@@ -57,7 +58,7 @@ class ScrollTopBottomNotifier extends Component {
         // if top of row is above bottom of viewport and bottom of row is bellow top of viewport
         if (calculatedHeight < scrollY + viewportHeight && calculatedHeight + childHeight > scrollY) {
           rowsToRender = update(rowsToRender, {
-            $push: [child.props]
+            $push: [ child.props ]
           });
         }
 
@@ -144,7 +145,7 @@ class ScrollTopBottomNotifier extends Component {
 
   render() {
     return (
-      <div style={ { height: '100%', width: '100%', overflow: 'hidden', overflowY: 'auto' } } onScroll={ this.handleScroll.bind(this) }>
+      <div style={ { height: '100%', width: '100%', overflow: 'hidden', overflowY: 'auto' } } onScroll={ bind(this.handleScroll, this) }>
         { this.props.children }
       </div>
     );

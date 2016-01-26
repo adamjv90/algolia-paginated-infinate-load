@@ -6,9 +6,10 @@ class LocaleStore {
     this.bindActions(this.alt.getActions('locale'));
     this.locales = [];
     this.messages = {};
+    this.formats = {};
   }
 
-  onSwitchLocaleSuccess({ messages, locale }) {
+  onSwitchLocale({ messages, locale }) {
     // Save locale into a cookie
     // that will be read from server on requests
     if (process.env.BROWSER) {

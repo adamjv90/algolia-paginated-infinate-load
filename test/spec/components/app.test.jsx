@@ -23,28 +23,45 @@ describe('App', () => {
     instance = ReactDOM.render(element, node);
   });
 
-  afterEach(function() {
+  afterEach(function () {
     if (instance) ReactDOM.unmountComponentAtNode(node);
   });
 
+<<<<<<< HEAD
   it('should change page title', function() {
     flux.getActions('title').set('foobar');
     document.title.should.eql('ISO-ReactJS | foobar');
+=======
+  it('should render header correctly', () => {
+    const header = TestUtils.scryRenderedDOMComponentsWithTag(instance, 'header');
+    header.length.should.eql(1);
   });
 
-  it('should handle locale change', function(done) {
-    const handleChange = function({ locales }) {
+  it('should render logo correctly', () => {
+    const logo = TestUtils.findRenderedDOMComponentWithClass(instance, 'app--logo');
+    should.exist(logo);
+  });
+
+  it('should change page title', function () {
+    flux.getActions('helmet').update({ title: 'foobar', titleBase: '' });
+    document.title.should.eql('foobar');
+>>>>>>> boilerplate/master
+  });
+
+  it('should handle locale change', function (done) {
+    function handleChange({ locales }) {
       locales[0].should.eql('fr');
       const { locales: [ locale ] } = flux.getStore('locale').getState();
       locale.should.eql('fr');
       flux.getStore('locale').unlisten(handleChange);
       return done();
-    };
+    }
+
     flux.getStore('locale').listen(handleChange);
-    flux.getActions('locale').switchLocale('fr');
+    flux.getActions('locale').switchLocale({ locale: 'fr' });
   });
 
-  it('should render children component', function() {
+  it('should render children component', function () {
     ReactDOM.unmountComponentAtNode(node);
     const Stubbed = stubApp(flux)(App, { flux });
     const Element = <Stubbed><h1 className='foobar'>foobar</h1></Stubbed>;

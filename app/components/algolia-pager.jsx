@@ -38,16 +38,16 @@ class AlgoliaPager extends Component {
 
   componentDidMount() {
     if (!this.state.pages.length) {
-      let promises = [this.query(this.state)];
+      let promises = [ this.query(this.state) ];
       if (this.state.page > 0) {
         promises = update(promises, {
-          $unshift: [this.query(update(this.state, { page: { $set: this.state.page - 1 } }))]
+          $unshift: [ this.query(update(this.state, { page: { $set: this.state.page - 1 } })) ]
         });
       }
 
       Promise.all(promises).then((pages) => {
         this.setState({
-          pages: pages
+          pages
         });
       });
     }
@@ -95,11 +95,11 @@ class AlgoliaPager extends Component {
     if (!this.doQueriesMatch(this.props, newProps) || (this.doQueriesMatch(this.props, newProps) && !this.containsPage(newProps.page) && this.state.pages.length)) {
       this.setState(update(newProps, { loading: { $set: true }, pages: { $set: [] } }));
 
-      let promises = [this.query(newProps)];
+      let promises = [ this.query(newProps) ];
 
       if (!this.doQueriesMatch(this.props, newProps) && newProps.page > 0) {
         promises = update(promises, {
-          $unshift: [this.query(update(newProps, { page: { $set: newProps.page - 1 } }))]
+          $unshift: [ this.query(update(newProps, { page: { $set: newProps.page - 1 } })) ]
         });
       }
 
@@ -150,7 +150,7 @@ class AlgoliaPager extends Component {
         loading: { $set: true }
       }));
 
-      const promises = [this.query(update(this.state, { page: { $set: curerntPage.number - 1 } }))];
+      const promises = [ this.query(update(this.state, { page: { $set: curerntPage.number - 1 } })) ];
       // if (curerntPage.number - 2 >= 0) {
       //   promises = update(promises, {
       //     $push: [this.query(update(this.state, { page: { $set: curerntPage.number - 2 } }))]
@@ -178,7 +178,7 @@ class AlgoliaPager extends Component {
         this.setState(update(this.state, {
           page: { $set: curerntPage.number + 1 },
           loading: { $set: false },
-          pages: { $push: [page] }
+          pages: { $push: [ page ] }
         }));
       });
     }
