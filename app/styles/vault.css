@@ -1,0 +1,291 @@
+@import './_variables';
+
+.app--vault {
+    .page {
+      width: 1140px;
+      margin: 0 auto;
+    }
+
+    .intro {
+        font-family: $sans-serif;
+        font-size: 20px;
+        text-align: center;
+        margin: 20px auto 30px auto;
+        height: 83px;
+        line-height: 83px;
+        width: 1129px;
+        margin-left: 5px;
+        background: url(../images/heading-stroke.png);
+    }
+
+    .term {
+        width: 360px;
+        height: 456px;
+        background-size: cover!important;
+        float: left;
+        text-decoration: none;
+        background-repeat: no-repeat;
+        -webkit-box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.1);
+        -moz-box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.1);
+        box-shadow: 0px 1px 4px 0px rgba(50, 50, 50, 0.1);
+        cursor:pointer;
+        position: relative;
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        .photocred {
+          display: inline;
+          padding: 5px;
+          background: #fff;
+          opacity: .5;
+          font-size: 11px;
+          font-family: Hurme;
+          position: absolute;
+          bottom: 40px;
+          right: 0px;
+          height: 20px;
+          line-height: 20px;
+          max-width: calc(100% - 10px);
+          width: auto;
+          font-family: $sans-serif;
+          color: #63605f;
+          max-width: 100%;
+        }
+
+        div{
+          height: 40px;
+          width: 101%;
+          background-color: white;
+          position: absolute;
+          bottom: 0px;
+          text-align: center;
+          display: table;
+          vertical-align: middle;
+
+          span{
+            font-family: $sans-serif;
+            color: #63605f;
+            text-transform: uppercase;
+            display: table-cell;
+            vertical-align: middle;
+            margin-top: 0px;
+            line-height: 18px;
+            height: auto;
+            position: initial;
+          }
+        }
+
+        > span {
+            font-family: $sans-serif;
+            color: #63605f;
+            line-height: 40px;
+            letter-spacing: 1px;
+            font-size: 14px;
+            text-transform: uppercase;
+            text-align: center;
+            display: block;
+            margin-top: 416px;
+            background-color:white;
+        }
+
+        &.decor {
+            background: url(../images/decor.jpg) no-repeat;
+        }
+
+        &.home-decor {
+            background: url(../images/home-decor.jpg) no-repeat;
+        }
+
+        &.entertaining {
+            background: url(../images/entertaining.jpg) no-repeat;
+        }
+
+        &.walls {
+            background: url(../images/walls.jpg) no-repeat;
+        }
+
+        &.kids-parties {
+            background: url(../images/kids-parties.jpg) no-repeat;
+        }
+
+        &.sofas {
+            background: url(../images/sofas.jpg) no-repeat;
+        }
+
+        &.parties {
+            background: url(../images/parties.jpg) no-repeat;
+        }
+
+        &.home-tours {
+            background: url(../images/home-tours.jpg) no-repeat;
+        }
+
+        &.flowers {
+            background: url(../images/flowers.jpg) no-repeat;
+        }
+
+        &.food-drink {
+            background: url(../images/food-drink.jpg) no-repeat;
+        }
+
+        &.wedding-cakes {
+            background: url(../images/wedding-cakes.jpg) no-repeat;
+        }
+
+        &.stationery {
+            background: url(../images/stationery.jpg) no-repeat;
+        }
+
+        &.wedding-dresses {
+            background: url(../images/wedding-dresses.jpg) no-repeat;
+        }
+
+        &.bride-groom {
+            background: url(../images/bride-groom.jpg) no-repeat;
+        }
+
+        &.hairstyles {
+            background: url(../images/hairstyles.jpg) no-repeat;
+        }
+
+        &.favors {
+            background: url(../images/favors.jpg) no-repeat;
+        }
+
+        &.artwork {
+            background: url(../images/artwork.jpg) no-repeat;
+        }
+
+        &.style {
+            background: url(../images/style.jpg) no-repeat;
+        }
+
+        &.recipes {
+            background: url(../images/recipes.jpg) no-repeat;
+        }
+
+        &.chairs {
+            background: url(../images/chairs.jpg) no-repeat;
+        }
+
+        &.home-decor {
+            background: url(../images/home-decor.jpg) no-repeat;
+        }
+
+        &.holiday {
+            background: url(../images/holiday.jpg) no-repeat;
+        }
+
+        &.diy {
+            background: url(../images/diy.jpg) no-repeat;
+        }
+
+        &.baby-shower {
+            background: url(../images/baby-shower.jpg) no-repeat;
+        }
+
+        &.birthday {
+            background: url(../images/birthday.jpg) no-repeat;
+        }
+    }
+
+    .term-divider {
+        width: 100%;
+        height: 1px;
+        background: #000;
+        margin: 20px auto 29px auto;
+    }
+
+    &.no-results {
+      > span {
+        font-size: 20px;
+        font-family: $sans-serif;
+        display: block;
+        text-align: center;
+        text-transform: uppercase;
+        padding: 30px 0 60px;
+        border-bottom: 1px #c6c6c6 solid;
+        margin-bottom: 30px;
+
+        .query {
+          color: #ff8f80;
+        }
+      }
+      .search {
+        display: none;
+      }
+    }
+}
+
+.mobile .app--vault {
+  .page {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+    .term {
+        width: calc(50% - 20px);
+        margin: 10px;
+        height: 280px;
+        background-size: cover!important;
+
+        span {
+          margin-top: 240px;
+          background: #fff;
+        }
+    }
+
+    .page {
+      margin-top: 25px;
+    }
+
+  .home-terms-render{
+    margin-left:0px;
+    margin-top:25px;
+  }
+}
+
+/*.tablet{
+  .app--header, .page{
+    width:100%;
+
+    .logo{
+      display:none;
+    }
+
+    .menu{
+      display:none;
+    }
+  }*/
+.tablet .app--vault {
+  .page {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .term {
+    width: calc(33.33% - 30px);
+    background-size: cover!important;
+    background-position: center center!important;
+  }
+
+  .home-terms-render{
+    margin-left:15px!important;
+  }
+}
+
+.mobile .intro, .tablet .intro{
+  background: url(../images/Vault_Pink_Swash_Mobile_144dpi.png);
+  display:block;
+  width: 100%;
+  padding: 41px;
+  box-sizing: border-box;
+  background-size: 100% 100%;
+  line-height:24px;
+  height: auto;
+  background-repeat:no-repeat;
+  padding-top: 20px;
+}
